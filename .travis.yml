@@ -125,12 +125,12 @@ jobs:
     # Add extra build to test against PHPCS 4.
     - stage: test
       php: 7.4
-      env: PHPCS_BRANCH="4.0.x-dev"
+      env: PHPCS_BRANCH="4.0.x-dev as 3.9.99"
 
   allow_failures:
     # Allow failures for unstable builds.
     - php: "nightly"
-    - env: PHPCS_BRANCH="4.0.x-dev"
+    - env: PHPCS_BRANCH="4.0.x-dev as 3.9.99"
 
 before_install:
     # Speed up build time by disabling Xdebug.
@@ -148,13 +148,13 @@ before_install:
     - export XMLLINT_INDENT="	"
     - export PHPUNIT_DIR=/tmp/phpunit
     - |
-      if [[ $TRAVIS_PHP_VERSION == "nightly" || $PHPCS_BRANCH == "4.0.x-dev" ]]; then
+      if [[ $TRAVIS_PHP_VERSION == "nightly" || $PHPCS_BRANCH == "4.0.x-dev as 3.9.99" ]]; then
           # Even though we're not doing a dev install, dev requirements are still checked.
           # Neither the PHPCS Composer plugin nor PHPCompatibility allows yet for PHPCS 4.x.
           # The Composer plugin also doesn't allow for installation on PHP 8.x/nightly.
           composer remove --dev dealerdirect/phpcodesniffer-composer-installer phpcompatibility/php-compatibility --no-update --no-scripts
       fi
-    - composer require squizlabs/php_codesniffer:${PHPCS_BRANCH} --update-no-dev --no-suggest --no-scripts
+    - composer require squizlabs/php_codesniffer:"${PHPCS_BRANCH}" --update-no-dev --no-suggest --no-scripts
     - |
       if [[ "${TRAVIS_BUILD_STAGE_NAME^}" == "Sniff" ]]; then
           composer install --dev --no-suggest
